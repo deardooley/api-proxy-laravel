@@ -2,7 +2,7 @@
 
 /**
  * @package   thinkingmik/api-proxy-laravel
- * @author    Michele Andreoli <michi.andreoli[at]gmail.com>
+ * @author    Michele Andreoli <michi.andreoli[at]gmail.com>, Rion Dooley <deardooley[at]gmail.com>
  * @copyright Copyright (c) Michele Andreoli
  * @license   http://mit-license.org/
  * @link      https://github.com/thinkingmik/api-proxy-laravel
@@ -29,7 +29,11 @@ class ApiProxyServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot() {
-        $this->package('thinkingmik/api-proxy-laravel');
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../../config/api-proxy.php' => config_path('api-proxy.php'),
+            ]);
+        }
     }
 
     /**
@@ -38,7 +42,7 @@ class ApiProxyServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
-        $this->registerErrorHandlers();
+        $this->mergeConfigFrom(__DIR__.'/../../config/api-proxy.php', 'api-proxy');
         $this->registerApiProxy();
     }
 
@@ -47,14 +51,15 @@ class ApiProxyServiceProvider extends ServiceProvider {
      * @return void
      */
     public function registerApiProxy() {
-        $this->app->bindShared('api-proxy.proxy', function ($app) {
-            $params = $app['config']->get('api-proxy-laravel::proxy');
+
+        $this->app->singleton('api-proxy', function () {
+            $params = $this->app['config']->get('api-proxy');
             $proxy = new Proxy($params);
             return $proxy;
         });
 
         $this->app->bind('ThinKingMik\ApiProxy\Proxy', function($app) {
-            return $app['api-proxy.proxy'];
+            return $app['api-proxy'];
         });
     }
 
@@ -64,30 +69,6 @@ class ApiProxyServiceProvider extends ServiceProvider {
      * @return array
      */
     public function provides() {
-        return array('api-proxy.proxy');
+        return [Proxy::class];
     }
-
-    /**
-     * Register the ApiProxy error handlers
-     * @return void
-     */
-    private function registerErrorHandlers() {
-        $this->app->error(function(ProxyException $ex) {
-            if (\Request::ajax() && \Request::wantsJson()) {
-                return new JsonResponse([
-                    'error' => $ex->errorType,
-                    'error_description' => $ex->getMessage()
-                ], $ex->httpStatusCode, $ex->getHttpHeaders()
-                );
-            }
-
-            return \View::make('api-proxy-laravel::proxy_error', array(
-                'header' => $ex->getHttpHeaders()[0],
-                'code' => $ex->httpStatusCode,
-                'error' => $ex->errorType,
-                'message' => $ex->getMessage()
-            ));
-        });
-    }
-
 }
