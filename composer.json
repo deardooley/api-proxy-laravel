@@ -1,5 +1,5 @@
 {
-    "name": "thinkingmik/api-proxy-laravel",
+    "name": "deardooley/api-proxy-laravel",
     "description": "A Laravel proxy package for javascript API calls",
     "keywords": [
         "laravel",
@@ -13,12 +13,19 @@
         {
             "name": "Michele Andreoli",
             "email": "michi.andreoli@gmail.com"
+        },
+        {
+            "name": "Rion Dooley",
+            "email": "deardooley@gmail.com"
         }
     ],
     "require": {
-        "php": ">=5.4.0",
-        "laravel/framework": "4.2.*",
-        "guzzlehttp/guzzle": "~5.0"
+        "php": "^7.1.3",
+        "laravel/framework": "5.6.*",
+        "guzzlehttp/guzzle": "~6.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.0"
     },
     "autoload": {
         "classmap": [
