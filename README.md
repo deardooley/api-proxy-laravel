@@ -1,11 +1,7 @@
-PHP Api Proxy for Laravel 4
+PHP Api Proxy for Laravel 5
 ================
 
-[![Latest Version](http://img.shields.io/github/release/thinkingmik/api-proxy-laravel.svg?style=flat-square)](https://packagist.org/packages/thinkingmik/api-proxy-laravel)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/travis/thinkingmik/api-proxy-laravel/master.svg?style=flat-square)](https://travis-ci.org/thinkingmik/api-proxy-laravel)
-[![Code Quality](https://img.shields.io/scrutinizer/g/thinkingmik/api-proxy-laravel.svg?style=flat-square)](https://scrutinizer-ci.com/g/thinkingmik/api-proxy-laravel/?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/thinkingmik/api-proxy-laravel.svg?style=flat-square)](https://packagist.org/packages/thinkingmik/api-proxy-laravel)
+> This is a fork of [thinkingmik/api-proxy-laravel](https://github.com/thinkingmik/api-proxy-laravel) updated for Laravel 5.6 and Guzzle 6 support. All credit goes to the original author. 
 
 ## Summary
  
