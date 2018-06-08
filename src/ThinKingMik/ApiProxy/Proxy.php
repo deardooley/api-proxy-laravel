@@ -44,9 +44,9 @@ class Proxy {
     /**
      * @param $method
      * @param array $inputs
-     * @return Response
-     * @throws CookieExpiredException
-     * @throws ProxyMissingParamException
+     * @return \Illuminate\Http\Response
+     * @throws \ThinKingMik\ApiProxy\Exceptions\CookieExpiredException
+     * @throws \ThinKingMik\ApiProxy\Exceptions\ProxyMissingParamException
      * @throws \Exception
      */
     public function makeRequest($method, Array $inputs) {
@@ -61,18 +61,29 @@ class Proxy {
         $inputs = ProxyAux::removeQueryValue($inputs, $this->skipParam);
         $inputs = ProxyAux::removeQueryValue($inputs, $this->revokeParam);
 
+        $parsedCookie = [
+//            ProxyAux::ACCESS_TOKEN => $inputs['access_token'],
+//            ProxyAux::REFRESH_TOKEN => $inputs['refresh_token'],
+//            ProxyAux::TOKEN_TYPE => 'bearer',
+//            ProxyAuth::TOKEN_EXPIRES => \Carbon\Carbon::now()->addHours(4)->getTimestamp(),
+//            ProxyAux::COOKIE_URI => $this->uri,
+//            ProxyAux::CLIENT_ID => $inputs['client_id'],
+        ];
+
+
+
         //Read the cookie if exists
-        $parsedCookie = null;
-        if ($this->callMode !== ProxyAux::MODE_SKIP) {
-            try {
-                $parsedCookie = $this->cookieManager->tryParseCookie($this->callMode);
-            } catch (CookieExpiredException $ex) {
-                if (isset($this->redirectUri) && !empty($this->redirectUri)) {
-                    return \Redirect::to($this->redirectUri);
-                }
-                throw $ex;
-            }
-        }
+//        $parsedCookie = null;
+//        if ($this->callMode !== ProxyAux::MODE_SKIP) {
+////            try {
+////                $parsedCookie = $this->cookieManager->tryParseCookie($this->callMode);
+////            } catch (CookieExpiredException $ex) {
+////                if (isset($this->redirectUri) && !empty($this->redirectUri)) {
+////                    return \Redirect::to($this->redirectUri);
+////                }
+////                throw $ex;
+////            }
+//        }
 
         //Create the new request
         $requestManager  = new RequestManager($this->uri, $method, $this->clientSecrets, $this->callMode, $this->cookieManager);
@@ -136,6 +147,8 @@ class Proxy {
                 $response->withCookie($cookie);
             }
         }
+
+        $response->header('Content-Type', $proxyResponse->getContentType());
 
         return $response;
     }

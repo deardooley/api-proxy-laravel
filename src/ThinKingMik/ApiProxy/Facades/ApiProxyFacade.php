@@ -20,7 +20,7 @@ class ApiProxyFacade extends Facade {
      * @codeCoverageIgnore
      */
     protected static function getFacadeAccessor() {
-        return 'api-proxy.proxy';
+        return 'api-proxy';
     }
 
 }

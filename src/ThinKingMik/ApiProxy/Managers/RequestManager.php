@@ -10,6 +10,7 @@
 
 namespace ThinKingMik\ApiProxy\Managers;
 
+use Psr\Http\Message\ResponseInterface;
 use ThinKingMik\ApiProxy\ProxyAux;
 use ThinKingMik\ApiProxy\Models\ProxyResponse;
 use ThinKingMik\ApiProxy\Models\MixResponse;
@@ -104,7 +105,7 @@ class RequestManager {
         $cookie = null;
         $mixed = new MixResponse($proxyResponse, $cookie);
 
-        if ($proxyResponse->getStatusCode() != 200) {
+        if ($proxyResponse->getStatusCode() <= 200) {
             if (array_key_exists(ProxyAux::REFRESH_TOKEN, $parsedCookie)) {
                 $mixed = $this->tryRefreshToken($inputs, $parsedCookie);
             }
@@ -189,12 +190,15 @@ class RequestManager {
      * @return ProxyResponse
      */
     private function replicateRequest($method, $uri, $inputs) {
+        /** @var ResponseInterface $guzzleResponse */
         $guzzleResponse = $this->sendGuzzleRequest($method, $uri, $inputs);
+
         $proxyResponse = new ProxyResponse(
             $guzzleResponse->getStatusCode(),
             $guzzleResponse->getReasonPhrase(),
             $guzzleResponse->getProtocolVersion(),
-            $this->getResponseContent($guzzleResponse)
+            $this->getResponseContent($guzzleResponse),
+            $guzzleResponse->getHeader('content-type')
         );
 
         return $proxyResponse;
@@ -251,10 +255,8 @@ class RequestManager {
             $options = array_add($options, 'body', $inputs);
         }
 
-        $request = $client->createRequest($method, $uriVal, $options);
-
         try {
-            $response = $client->send($request);
+            $response = $client->request($method, $uriVal, $options);
         }
         catch (ClientException $ex) {
             $response = $ex->getResponse();

@@ -16,12 +16,15 @@ class ProxyResponse {
     private $reasonPhrase = null;
     private $protocolVersion = null;
     private $content = null;
+    private $contentType = null;
 
-    public function __construct($statusCode, $reasonPhrase, $protoVersion, $content) {
+    public function __construct($statusCode, $reasonPhrase, $protoVersion, $content, $contentType) {
         $this->statusCode = $statusCode;
         $this->reasonPhrase = $reasonPhrase;
         $this->protocolVersion = $protoVersion;
         $this->content = $content;
+        $this->contentType = $contentType;
+
     }
 
     public function setStatusCode($status) {
@@ -40,6 +43,10 @@ class ProxyResponse {
         $this->content = $content;
     }
 
+    public function setContentType($contentType) {
+        $this->contentType = $contentType;
+    }
+
     public function getStatusCode() {
         return $this->statusCode;
     }
@@ -54,5 +61,9 @@ class ProxyResponse {
 
     public function getContent() {
         return $this->content;
+    }
+
+    public function getContentType() {
+        return $this->contentType;
     }
 }
